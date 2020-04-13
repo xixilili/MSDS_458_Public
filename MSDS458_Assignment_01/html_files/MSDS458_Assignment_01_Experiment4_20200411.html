@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>MSDS 458 Assignment 1 (Experiment 1 + Tensorboard) March 24</title>
+<title>MSDS 458 Assignment 1 (Experiment 4) April 11</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13083,32 +13083,10 @@ div#notebook {
     });
     </script>
     <!-- End of mathjax configuration --></head>
-
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
-
-<link rel="stylesheet" type="text/css" href="https://rawgit.com/ipython-contrib/jupyter_contrib_nbextensions/master/src/jupyter_contrib_nbextensions/nbextensions/toc2/main.css">
-
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<script src="https://rawgit.com/ipython-contrib/jupyter_contrib_nbextensions/master/src/jupyter_contrib_nbextensions/nbextensions/toc2/toc2.js"></script>
-
-<script>
-$( document ).ready(function(){
-
-            var cfg = {"base_numbering": 1, "nav_menu": {}, "number_sections": false, "sideBar": true, "skip_h1_title": false, "title_cell": "Table of Contents", "title_sidebar": "Contents", "toc_cell": false, "toc_position": {}, "toc_section_display": true, "toc_window_display": true};
-
-            // fire the main function with these parameters
-            require(['nbextensions/toc2/toc2'], function (toc2) {
-                toc2.table_of_contents(cfg);
-            });
-    });
-</script>
 <body>
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
-DATE: March 24, 2020
+DATE: April 11, 2020
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13156,7 +13134,7 @@ DATE: March 24, 2020
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>  <span class="c1"># for Tensorboard</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
@@ -13227,10 +13205,7 @@ DATE: March 24, 2020
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># neccessary for K.gradient to work in TensorFlow 2.x</span>
-<span class="c1"># only needed for the &quot;Finding a pattern the hidden node maximally responds to&quot; section below.</span>
-<span class="c1"># but disabled to make Tensorboard work...</span>
-<span class="c1">#tf.compat.v1.disable_eager_execution() </span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#tf.compat.v1.disable_eager_execution() # neccessary for K.gradient to work in TensorFlow 2.x</span>
 </pre></div>
 
     </div>
@@ -13277,43 +13252,11 @@ DATE: March 24, 2020
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_images</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">test_images</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">test_labels</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">test_labels</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[6]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>((60000, 28, 28), (10000, 28, 28), (10000,), (10000,))</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="EXPERIMENT--1:">EXPERIMENT  1:<a class="anchor-link" href="#EXPERIMENT--1:">&#182;</a></h1><p>Our <code>DNN</code> will consist of 784 input nodes, a hidden layer with <code>1 node</code> and 10 output nodes (corresponding to the 10 digits). We use <code>mnist.load_data()</code> to get the 70,000 images divided into a set of 60,000 training images and 10,000 test images. We hold back 5,000 of the 60,000 training images for validation. After training the model, we group the 60,000 <code>activation values</code> of the hidden node for the (original) set of training images by the 10 predicted classes and visualize these sets of values using a <code>boxplot</code>. We expect the overlap between the range of values in the "boxes" to be minimal.</p>
+<h2 id="EXPERIMENT--4:">EXPERIMENT  4:<a class="anchor-link" href="#EXPERIMENT--4:">&#182;</a></h2><p>We use PCA to reduce the number of dimensions of our training set of 28x28 dimensional MNIST images from 784 to 200. We should reduce the number of dimensions of our 'best' model from <code>EXPERIMENT 3</code> to 200 inputs nodes and train it on the new lower dimensional data. For argument sake, We assume our 'best' model consists of 784 input nodes, a hidden layer with <code>1 node</code> and 10 output nodes (corresponding to the 10 digits).</p>
+<p>We use <code>mnist.load_data()</code> to get the 70,000 images divided into a set of 60,000 training images and 10,000 test images. We hold back 5,000 of the 60,000 training images for validation. After training the model, we group the 60,000 <code>activation values</code> of the hidden node for the (original) set of training images by the 10 predicted classes and visualize these sets of values using a <code>boxplot</code>. We expect the overlap between the range of values in the "boxes" to be minimal.</p>
 
 </div>
 </div>
@@ -13330,7 +13273,7 @@ DATE: March 24, 2020
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_images</span> <span class="o">=</span> <span class="n">train_images</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">60000</span><span class="p">,</span> <span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">))</span>
@@ -13348,14 +13291,15 @@ DATE: March 24, 2020
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Validating-our-approach">Validating our approach<a class="anchor-link" href="#Validating-our-approach">&#182;</a></h2><p>We set apart 5,000 samples of our training data to use as a validation set. Since we will be using <code>sparse_categorical_crossentropy</code> as the loss function we <strong>do not</strong> need to use <code>to_categorical</code> to convert the class vector of labels to binary matrix representation.</p>
+<h2 id="Validating-our-approach">Validating our approach<a class="anchor-link" href="#Validating-our-approach">&#182;</a></h2><p>Since we will be using categorical_crossentropy as the loss function we need to use to_categorical to convert the class vector of lables to binary matrix representation.</p>
+<p>We set apart 5,000 samples of our training data to use as a validation set. Since we will be using <code>sparse_categorical_crossentropy</code> as the loss function we <strong>do not</strong> need to use <code>to_categorical</code> to convert the class vector of labels to binary matrix representation.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">val_images</span><span class="p">,</span> <span class="n">train_images</span> <span class="o">=</span> <span class="n">train_images</span><span class="p">[:</span><span class="mi">5000</span><span class="p">],</span> <span class="n">train_images</span><span class="p">[</span><span class="mi">5000</span><span class="p">:]</span> 
@@ -13370,8 +13314,65 @@ DATE: March 24, 2020
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Building-our-network">Building our network<a class="anchor-link" href="#Building-our-network">&#182;</a></h2><p>Here our network consists of a sequence of two <code>Dense</code> layers, which are densely-connected (also called "fully-connected") neural layers.</p>
-<p>The first <code>Dense</code> layer, the hidden layer, consists of just <code>one node</code>.</p>
+<h2 id="Reducing-dimensionality-of-the-data-with-PCA-decomposition.">Reducing dimensionality of the data with PCA decomposition.<a class="anchor-link" href="#Reducing-dimensionality-of-the-data-with-PCA-decomposition.">&#182;</a></h2><p>We use PCA decomposition to reduce the number of dimensions of our training set of 28x28 dimensional MNIST images. By setting <code>n_components=0.95</code> we get the 154 principal components that contain 95% of the variance (information) in the training images. We transform the training images to reduce its dimensionality from 784 to 154. We also reduce the number of dimensions of 'best' model from Experiment 3 to 154 inputs nodes and train it on the new lower dimensional data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+<span class="n">train_images_red</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">train_images</span><span class="p">)</span>
+<span class="n">val_images_red</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">val_images</span><span class="p">)</span>
+<span class="n">test_images_red</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test_images</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_images_red</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">train_images_red</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">val_images_red</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[9]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>((10000, 154), (55000, 154), (5000, 154))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Building-our-'best'-network-(before-reducing-dimensions)">Building our 'best' network (before reducing dimensions)<a class="anchor-link" href="#Building-our-'best'-network-(before-reducing-dimensions)">&#182;</a></h2><p>Recall from <code>Experiment 3</code> that our network consists of a sequence of two <code>Dense</code> layers, which are densely-connected (also called "fully-connected") neural layers.</p>
+<p>The first <code>Dense</code> layer, the hidden layer, consists of <code>85 nodes</code>.</p>
 <p>The second (and last) layer is a 10-way "softmax" layer, which means it will return an array of 10 probability scores (summing to 1). Each  score will be the probability that the current digit image belongs to one of our 10 digit classes.</p>
 
 </div>
@@ -13379,14 +13380,14 @@ DATE: March 24, 2020
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">models</span>
 <span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,)))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,)))</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>   
 </pre></div>
 
@@ -13397,7 +13398,7 @@ DATE: March 24, 2020
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">keras</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;mnist_model_1hnode.png&quot;</span><span class="p">,</span> <span class="n">show_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># plot a graph of the model</span>
@@ -13413,16 +13414,13 @@ DATE: March 24, 2020
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[10]:</div>
+    <div class="prompt"></div>
 
 
-
-
-<div class="output_png output_subarea output_execute_result">
-<img src="output_17_0.png"
->
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Failed to import pydot. You must install pydot and graphviz for `pydotprint` to work.
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -13431,7 +13429,7 @@ DATE: March 24, 2020
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span> <span class="c1"># prints a summary representation of the odel</span>
@@ -13455,12 +13453,12 @@ DATE: March 24, 2020
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
 =================================================================
-dense (Dense)                (None, 1)                 785       
+dense (Dense)                (None, 85)                66725     
 _________________________________________________________________
-dense_1 (Dense)              (None, 10)                20        
+dense_1 (Dense)              (None, 10)                860       
 =================================================================
-Total params: 805
-Trainable params: 805
+Total params: 67,585
+Trainable params: 67,585
 Non-trainable params: 0
 _________________________________________________________________
 </pre>
@@ -13486,99 +13484,16 @@ _________________________________________________________________
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># For use with non-categorical labels</span>
 <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span>
-<span class="c1">#model.compile(optimizer=keras.optimizers.SGD(lr=1e-3),</span>
                 <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;sparse_categorical_crossentropy&#39;</span><span class="p">,</span>
                 <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Creating-a-log-directory-for-Tensorboard">Creating a log directory for Tensorboard<a class="anchor-link" href="#Creating-a-log-directory-for-Tensorboard">&#182;</a></h2><p>We create a log directory and time time-stamped filename for the log file we are going to save with data for visualization in Tensorboard.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="n">root_logdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span> <span class="s2">&quot;assignment1_logs&quot;</span><span class="p">)</span>
-<span class="n">root_logdir</span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[13]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;./assignment1_logs&#39;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_run_logdir</span><span class="p">():</span>
-    <span class="kn">import</span> <span class="nn">time</span>
-    <span class="n">run_id</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;run_%Y_%m_</span><span class="si">%d</span><span class="s2">-%H_%M_%S&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_logdir</span><span class="p">,</span> <span class="n">run_id</span><span class="p">)</span>
-
-<span class="n">run_logdir</span> <span class="o">=</span> <span class="n">get_run_logdir</span><span class="p">()</span>
-<span class="n">run_logdir</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[14]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;./assignment1_logs/run_2020_03_24-14_48_25&#39;</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -13594,14 +13509,11 @@ we "fit" the model to its training data. We train the model for 30 epochs with b
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tensorboard_cb</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">TensorBoard</span><span class="p">(</span><span class="n">run_logdir</span><span class="p">,</span><span class="n">histogram_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">checkpoint_cb</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">(</span><span class="s2">&quot;A1_Ex1_model.h5&quot;</span><span class="p">,</span> <span class="n">save_best_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_images</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-                    <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">val_images</span><span class="p">,</span> <span class="n">val_labels</span><span class="p">),</span>
-                    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">checkpoint_cb</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_images</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                    <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">val_images</span><span class="p">,</span> <span class="n">val_labels</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13620,65 +13532,65 @@ we "fit" the model to its training data. We train the model for 30 epochs with b
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Train on 55000 samples, validate on 5000 samples
 Epoch 1/30
-55000/55000 [==============================] - 3s 52us/sample - loss: 1.9994 - accuracy: 0.2235 - val_loss: 1.8683 - val_accuracy: 0.2610
+55000/55000 [==============================] - 3s 58us/sample - loss: 0.2901 - accuracy: 0.9179 - val_loss: 0.1553 - val_accuracy: 0.9558
 Epoch 2/30
-55000/55000 [==============================] - 2s 44us/sample - loss: 1.8293 - accuracy: 0.2786 - val_loss: 1.7794 - val_accuracy: 0.2978
+55000/55000 [==============================] - 3s 51us/sample - loss: 0.1440 - accuracy: 0.9570 - val_loss: 0.1136 - val_accuracy: 0.9654
 Epoch 3/30
-55000/55000 [==============================] - 2s 34us/sample - loss: 1.7600 - accuracy: 0.3033 - val_loss: 1.7178 - val_accuracy: 0.3108
+55000/55000 [==============================] - 3s 48us/sample - loss: 0.1076 - accuracy: 0.9682 - val_loss: 0.1038 - val_accuracy: 0.9694
 Epoch 4/30
-55000/55000 [==============================] - 2s 33us/sample - loss: 1.7058 - accuracy: 0.3201 - val_loss: 1.6698 - val_accuracy: 0.3454
+55000/55000 [==============================] - 2s 45us/sample - loss: 0.0860 - accuracy: 0.9749 - val_loss: 0.0980 - val_accuracy: 0.9716
 Epoch 5/30
-55000/55000 [==============================] - 2s 34us/sample - loss: 1.6669 - accuracy: 0.3342 - val_loss: 1.6375 - val_accuracy: 0.3438
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0731 - accuracy: 0.9785 - val_loss: 0.0859 - val_accuracy: 0.9750
 Epoch 6/30
-55000/55000 [==============================] - 3s 47us/sample - loss: 1.6393 - accuracy: 0.3381 - val_loss: 1.6101 - val_accuracy: 0.3408
+55000/55000 [==============================] - 3s 47us/sample - loss: 0.0625 - accuracy: 0.9821 - val_loss: 0.0884 - val_accuracy: 0.9738
 Epoch 7/30
-55000/55000 [==============================] - 4s 72us/sample - loss: 1.6193 - accuracy: 0.3443 - val_loss: 1.5957 - val_accuracy: 0.3592
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0564 - accuracy: 0.9840 - val_loss: 0.0897 - val_accuracy: 0.9758
 Epoch 8/30
-55000/55000 [==============================] - 2s 33us/sample - loss: 1.6039 - accuracy: 0.3563 - val_loss: 1.5815 - val_accuracy: 0.3596
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0506 - accuracy: 0.9858 - val_loss: 0.0869 - val_accuracy: 0.9768
 Epoch 9/30
-55000/55000 [==============================] - 2s 32us/sample - loss: 1.5920 - accuracy: 0.3664 - val_loss: 1.5706 - val_accuracy: 0.3604
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0459 - accuracy: 0.9870 - val_loss: 0.0957 - val_accuracy: 0.9734
 Epoch 10/30
-55000/55000 [==============================] - 2s 32us/sample - loss: 1.5829 - accuracy: 0.3653 - val_loss: 1.5573 - val_accuracy: 0.3716
+55000/55000 [==============================] - 3s 45us/sample - loss: 0.0414 - accuracy: 0.9881 - val_loss: 0.0943 - val_accuracy: 0.9770
 Epoch 11/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5753 - accuracy: 0.3675 - val_loss: 1.5500 - val_accuracy: 0.3656
+55000/55000 [==============================] - 3s 47us/sample - loss: 0.0373 - accuracy: 0.9895 - val_loss: 0.0999 - val_accuracy: 0.9738
 Epoch 12/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5697 - accuracy: 0.3696 - val_loss: 1.5558 - val_accuracy: 0.3644
+55000/55000 [==============================] - 2s 45us/sample - loss: 0.0345 - accuracy: 0.9907 - val_loss: 0.1023 - val_accuracy: 0.9742
 Epoch 13/30
-55000/55000 [==============================] - 2s 33us/sample - loss: 1.5657 - accuracy: 0.3759 - val_loss: 1.5416 - val_accuracy: 0.3736
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0314 - accuracy: 0.9915 - val_loss: 0.1008 - val_accuracy: 0.9740
 Epoch 14/30
-55000/55000 [==============================] - 2s 32us/sample - loss: 1.5627 - accuracy: 0.3766 - val_loss: 1.5377 - val_accuracy: 0.3610
+55000/55000 [==============================] - 3s 48us/sample - loss: 0.0290 - accuracy: 0.9923 - val_loss: 0.1036 - val_accuracy: 0.9766
 Epoch 15/30
-55000/55000 [==============================] - 2s 33us/sample - loss: 1.5597 - accuracy: 0.3783 - val_loss: 1.5343 - val_accuracy: 0.3692
+55000/55000 [==============================] - 3s 48us/sample - loss: 0.0272 - accuracy: 0.9933 - val_loss: 0.1051 - val_accuracy: 0.9770
 Epoch 16/30
-55000/55000 [==============================] - 2s 32us/sample - loss: 1.5582 - accuracy: 0.3790 - val_loss: 1.5368 - val_accuracy: 0.3652
+55000/55000 [==============================] - 3s 49us/sample - loss: 0.0248 - accuracy: 0.9940 - val_loss: 0.1150 - val_accuracy: 0.9748
 Epoch 17/30
-55000/55000 [==============================] - 2s 32us/sample - loss: 1.5565 - accuracy: 0.3778 - val_loss: 1.5353 - val_accuracy: 0.3658
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0230 - accuracy: 0.9943 - val_loss: 0.1176 - val_accuracy: 0.9768
 Epoch 18/30
-55000/55000 [==============================] - 2s 33us/sample - loss: 1.5557 - accuracy: 0.3802 - val_loss: 1.5328 - val_accuracy: 0.3802
+55000/55000 [==============================] - 3s 47us/sample - loss: 0.0214 - accuracy: 0.9943 - val_loss: 0.1153 - val_accuracy: 0.9762
 Epoch 19/30
-55000/55000 [==============================] - 2s 32us/sample - loss: 1.5547 - accuracy: 0.3777 - val_loss: 1.5314 - val_accuracy: 0.3682
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0196 - accuracy: 0.9950 - val_loss: 0.1256 - val_accuracy: 0.9740
 Epoch 20/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5542 - accuracy: 0.3785 - val_loss: 1.5303 - val_accuracy: 0.3762
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0178 - accuracy: 0.9959 - val_loss: 0.1266 - val_accuracy: 0.9758
 Epoch 21/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5537 - accuracy: 0.3813 - val_loss: 1.5316 - val_accuracy: 0.3638
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0171 - accuracy: 0.9959 - val_loss: 0.1349 - val_accuracy: 0.9750
 Epoch 22/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5535 - accuracy: 0.3763 - val_loss: 1.5332 - val_accuracy: 0.3682
+55000/55000 [==============================] - 3s 48us/sample - loss: 0.0156 - accuracy: 0.9962 - val_loss: 0.1323 - val_accuracy: 0.9740
 Epoch 23/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5531 - accuracy: 0.3804 - val_loss: 1.5313 - val_accuracy: 0.3574
+55000/55000 [==============================] - 3s 47us/sample - loss: 0.0146 - accuracy: 0.9963 - val_loss: 0.1398 - val_accuracy: 0.9748
 Epoch 24/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5527 - accuracy: 0.3800 - val_loss: 1.5314 - val_accuracy: 0.3728
+55000/55000 [==============================] - 3s 47us/sample - loss: 0.0136 - accuracy: 0.9968 - val_loss: 0.1333 - val_accuracy: 0.9738
 Epoch 25/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5526 - accuracy: 0.3816 - val_loss: 1.5279 - val_accuracy: 0.3734
+55000/55000 [==============================] - 3s 49us/sample - loss: 0.0122 - accuracy: 0.9973 - val_loss: 0.1578 - val_accuracy: 0.9736
 Epoch 26/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5525 - accuracy: 0.3822 - val_loss: 1.5345 - val_accuracy: 0.3626
+55000/55000 [==============================] - 3s 48us/sample - loss: 0.0126 - accuracy: 0.9971 - val_loss: 0.1471 - val_accuracy: 0.9742
 Epoch 27/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5527 - accuracy: 0.3849 - val_loss: 1.5269 - val_accuracy: 0.3760
+55000/55000 [==============================] - 3s 49us/sample - loss: 0.0108 - accuracy: 0.9975 - val_loss: 0.1565 - val_accuracy: 0.9724
 Epoch 28/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5528 - accuracy: 0.3861 - val_loss: 1.5300 - val_accuracy: 0.4156
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0105 - accuracy: 0.9974 - val_loss: 0.1529 - val_accuracy: 0.9758
 Epoch 29/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5531 - accuracy: 0.3886 - val_loss: 1.5274 - val_accuracy: 0.4144
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0096 - accuracy: 0.9979 - val_loss: 0.1570 - val_accuracy: 0.9752
 Epoch 30/30
-55000/55000 [==============================] - 2s 31us/sample - loss: 1.5529 - accuracy: 0.3917 - val_loss: 1.5289 - val_accuracy: 0.3880
+55000/55000 [==============================] - 3s 48us/sample - loss: 0.0091 - accuracy: 0.9978 - val_loss: 0.1565 - val_accuracy: 0.9754
 </pre>
 </div>
 </div>
@@ -13689,42 +13601,11 @@ Epoch 30/30
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This was required to get tensorboard to work (%tensorboard --logdir=./assignment1_logs --port=6006 )</span>
-<span class="c1"># !pip install grpcio --upgrade</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Creating-a-log-directory-for-Tensorboard">Creating a log directory for Tensorboard<a class="anchor-link" href="#Creating-a-log-directory-for-Tensorboard">&#182;</a></h2><p>We create a log directory and time time-stamped filename for the log file we are going to save with data for visualization in Tensorboard</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="n">root_logdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span> <span class="s2">&quot;assignment1_logs&quot;</span><span class="p">)</span>
-<span class="n">root_logdir</span> 
-
-<span class="k">def</span> <span class="nf">get_run_logdir</span><span class="p">():</span>
-    <span class="kn">import</span> <span class="nn">time</span>
-    <span class="n">run_id</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;run_%Y_%m_</span><span class="si">%d</span><span class="s2">-%H_%M_%S&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_logdir</span><span class="p">,</span> <span class="n">run_id</span><span class="p">)</span>
-
-<span class="n">run_logdir</span> <span class="o">=</span> <span class="n">get_run_logdir</span><span class="p">()</span>
-<span class="n">run_logdir</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hist_dict</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span>
+<span class="n">hist_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13737,13 +13618,13 @@ Epoch 30/30
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[17]:</div>
+    <div class="prompt output_prompt">Out[15]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;./assignment1_logs/run_2020_03_24-14_49_22&#39;</pre>
+<pre>dict_keys([&#39;loss&#39;, &#39;accuracy&#39;, &#39;val_loss&#39;, &#39;val_accuracy&#39;])</pre>
 </div>
 
 </div>
@@ -13754,11 +13635,11 @@ Epoch 30/30
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> tensorboard
-<span class="o">%</span><span class="k">tensorboard</span> --logdir=./assignment1_logs --port=6006 # 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;acc: </span><span class="si">{hist_dict[&#39;accuracy&#39;][-1]:.4}</span><span class="s1">, val acc: </span><span class="si">{hist_dict[&#39;val_accuracy&#39;][-1]:.4}</span><span class="s1">,</span>
+<span class="s1">loss: </span><span class="si">{hist_dict[&#39;loss&#39;][-1]:.4}</span><span class="s1">, val loss: </span><span class="si">{hist_dict[&#39;val_loss&#39;][-1]:.4}</span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13775,26 +13656,10 @@ Epoch 30/30
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>The tensorboard extension is already loaded. To reload it, use:
-  %reload_ext tensorboard
+<pre>acc: 0.9978, val acc: 0.9754,
+loss: 0.009097, val loss: 0.1565
 </pre>
 </div>
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_text output_subarea ">
-<pre>ERROR: Failed to launch TensorBoard (exited with 255).
-Contents of stderr:
-E0324 15:55:58.541584 4526374336 program.py:288] TensorBoard could not bind to port 6006, it was already in use
-ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
-</div>
-
 </div>
 
 </div>
@@ -13811,7 +13676,7 @@ ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test_images</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span>
@@ -13831,7 +13696,7 @@ ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>10000/10000 [==============================] - 0s 19us/sample - loss: 1.5477 - accuracy: 0.3933
+<pre>10000/10000 [==============================] - 0s 22us/sample - loss: 0.1702 - accuracy: 0.9740
 </pre>
 </div>
 </div>
@@ -13842,10 +13707,10 @@ ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;test acc: </span><span class="si">{</span><span class="n">test_acc</span><span class="si">}</span><span class="s1">, test loss: </span><span class="si">{</span><span class="n">test_loss</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># Not very good...</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;test acc: </span><span class="si">{test_acc}</span><span class="s1">, test loss: </span><span class="si">{test_loss}</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># Note very good...</span>
 </pre></div>
 
     </div>
@@ -13862,7 +13727,7 @@ ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>test acc: 0.39329999685287476, test loss: 1.547741999435425
+<pre>test acc: 0.9739999771118164, test loss: 0.17017456902856953
 </pre>
 </div>
 </div>
@@ -13874,18 +13739,29 @@ ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Plotting-the-performance">Plotting the performance<a class="anchor-link" href="#Plotting-the-performance">&#182;</a></h2><p>We use Matplotlib to create 2 plots--displaying the training and validation loss (resp. accuracy) for each (training) epoch side by side.</p>
+<h2 id="Building,-training-and-testing-the-model-on-the-new-data">Building, training and testing the model on the new data<a class="anchor-link" href="#Building,-training-and-testing-the-model-on-the-new-data">&#182;</a></h2><p>We modify the model to take input with dimension (154,)</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">history_dict</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span>
-<span class="n">history_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">154</span><span class="p">,)))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>  
+
+<span class="c1"># For use with non-categorical labels</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span>
+                <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;sparse_categorical_crossentropy&#39;</span><span class="p">,</span>
+                <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+<span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_images_red</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                    <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">val_images_red</span><span class="p">,</span> <span class="n">val_labels</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13898,7 +13774,99 @@ ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[21]:</div>
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Train on 55000 samples, validate on 5000 samples
+Epoch 1/30
+55000/55000 [==============================] - 2s 42us/sample - loss: 0.3455 - accuracy: 0.9057 - val_loss: 0.1604 - val_accuracy: 0.9562
+Epoch 2/30
+55000/55000 [==============================] - 2s 34us/sample - loss: 0.1369 - accuracy: 0.9597 - val_loss: 0.1189 - val_accuracy: 0.9660
+Epoch 3/30
+55000/55000 [==============================] - 2s 33us/sample - loss: 0.0975 - accuracy: 0.9719 - val_loss: 0.1001 - val_accuracy: 0.9714
+Epoch 4/30
+55000/55000 [==============================] - 2s 34us/sample - loss: 0.0753 - accuracy: 0.9779 - val_loss: 0.0907 - val_accuracy: 0.9742
+Epoch 5/30
+55000/55000 [==============================] - 2s 33us/sample - loss: 0.0604 - accuracy: 0.9819 - val_loss: 0.0880 - val_accuracy: 0.9744
+Epoch 6/30
+55000/55000 [==============================] - 2s 32us/sample - loss: 0.0495 - accuracy: 0.9860 - val_loss: 0.0849 - val_accuracy: 0.9770
+Epoch 7/30
+55000/55000 [==============================] - 2s 34us/sample - loss: 0.0418 - accuracy: 0.9882 - val_loss: 0.0837 - val_accuracy: 0.9762
+Epoch 8/30
+55000/55000 [==============================] - 2s 32us/sample - loss: 0.0352 - accuracy: 0.9901 - val_loss: 0.0848 - val_accuracy: 0.9770
+Epoch 9/30
+55000/55000 [==============================] - 2s 44us/sample - loss: 0.0296 - accuracy: 0.9922 - val_loss: 0.0863 - val_accuracy: 0.9766
+Epoch 10/30
+55000/55000 [==============================] - 2s 34us/sample - loss: 0.0254 - accuracy: 0.9936 - val_loss: 0.0898 - val_accuracy: 0.9772
+Epoch 11/30
+55000/55000 [==============================] - 2s 32us/sample - loss: 0.0215 - accuracy: 0.9948 - val_loss: 0.0945 - val_accuracy: 0.9752
+Epoch 12/30
+55000/55000 [==============================] - 2s 32us/sample - loss: 0.0184 - accuracy: 0.9955 - val_loss: 0.0992 - val_accuracy: 0.9758
+Epoch 13/30
+55000/55000 [==============================] - 2s 32us/sample - loss: 0.0153 - accuracy: 0.9967 - val_loss: 0.1015 - val_accuracy: 0.9756
+Epoch 14/30
+55000/55000 [==============================] - 2s 32us/sample - loss: 0.0133 - accuracy: 0.9971 - val_loss: 0.1074 - val_accuracy: 0.9752
+Epoch 15/30
+55000/55000 [==============================] - 2s 34us/sample - loss: 0.0114 - accuracy: 0.9978 - val_loss: 0.1056 - val_accuracy: 0.9754
+Epoch 16/30
+55000/55000 [==============================] - 2s 35us/sample - loss: 0.0095 - accuracy: 0.9983 - val_loss: 0.1159 - val_accuracy: 0.9744
+Epoch 17/30
+55000/55000 [==============================] - 2s 39us/sample - loss: 0.0084 - accuracy: 0.9984 - val_loss: 0.1136 - val_accuracy: 0.9764
+Epoch 18/30
+55000/55000 [==============================] - 3s 46us/sample - loss: 0.0069 - accuracy: 0.9988 - val_loss: 0.1152 - val_accuracy: 0.9736
+Epoch 19/30
+55000/55000 [==============================] - 2s 39us/sample - loss: 0.0059 - accuracy: 0.9989 - val_loss: 0.1211 - val_accuracy: 0.9750
+Epoch 20/30
+55000/55000 [==============================] - 2s 35us/sample - loss: 0.0053 - accuracy: 0.9990 - val_loss: 0.1289 - val_accuracy: 0.9734
+Epoch 21/30
+55000/55000 [==============================] - 2s 36us/sample - loss: 0.0044 - accuracy: 0.9992 - val_loss: 0.1349 - val_accuracy: 0.9728
+Epoch 22/30
+55000/55000 [==============================] - 2s 34us/sample - loss: 0.0037 - accuracy: 0.9994 - val_loss: 0.1370 - val_accuracy: 0.9746
+Epoch 23/30
+55000/55000 [==============================] - 2s 39us/sample - loss: 0.0032 - accuracy: 0.9995 - val_loss: 0.1428 - val_accuracy: 0.9734
+Epoch 24/30
+55000/55000 [==============================] - 2s 41us/sample - loss: 0.0025 - accuracy: 0.9997 - val_loss: 0.1438 - val_accuracy: 0.9748
+Epoch 25/30
+55000/55000 [==============================] - 2s 38us/sample - loss: 0.0024 - accuracy: 0.9997 - val_loss: 0.1518 - val_accuracy: 0.9728
+Epoch 26/30
+55000/55000 [==============================] - 2s 36us/sample - loss: 0.0019 - accuracy: 0.9997 - val_loss: 0.1607 - val_accuracy: 0.9742
+Epoch 27/30
+55000/55000 [==============================] - 2s 33us/sample - loss: 0.0019 - accuracy: 0.9997 - val_loss: 0.1569 - val_accuracy: 0.9724
+Epoch 28/30
+55000/55000 [==============================] - 2s 34us/sample - loss: 0.0016 - accuracy: 0.9998 - val_loss: 0.1685 - val_accuracy: 0.9724
+Epoch 29/30
+55000/55000 [==============================] - 2s 33us/sample - loss: 0.0013 - accuracy: 0.9999 - val_loss: 0.1694 - val_accuracy: 0.9738
+Epoch 30/30
+55000/55000 [==============================] - 2s 33us/sample - loss: 0.0013 - accuracy: 0.9998 - val_loss: 0.1779 - val_accuracy: 0.9736
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hist_dict</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span>
+<span class="n">hist_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[20]:</div>
 
 
 
@@ -13915,7 +13883,160 @@ ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;acc: </span><span class="si">{hist_dict[&#39;accuracy&#39;][-1]:.4}</span><span class="s1">, val acc: </span><span class="si">{hist_dict[&#39;val_accuracy&#39;][-1]:.4}</span><span class="s1">,</span>
+<span class="s1">loss: </span><span class="si">{hist_dict[&#39;loss&#39;][-1]:.4}</span><span class="s1">, val loss: </span><span class="si">{hist_dict[&#39;val_loss&#39;][-1]:.4}</span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>acc: 0.9998, val acc: 0.9736,
+loss: 0.001275, val loss: 0.1779
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Testing-the-model">Testing the model<a class="anchor-link" href="#Testing-the-model">&#182;</a></h2><p>Evaluate the model on the test dataset.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 <div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test_images_red</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>10000/10000 [==============================] - 0s 24us/sample - loss: 0.1846 - accuracy: 0.9733
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;test acc: </span><span class="si">{test_acc}</span><span class="s1">, test loss: </span><span class="si">{test_loss}</span><span class="s1">&#39;</span><span class="p">)</span>  
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>test acc: 0.9732999801635742, test loss: 0.18457911113917325
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Comparison-of-the-two-models">Comparison of the two models<a class="anchor-link" href="#Comparison-of-the-two-models">&#182;</a></h1><p>Reducing the dimensions from 784 to 154 had no negative impact on the performance of our 'best' model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Plotting-the-performance">Plotting the performance<a class="anchor-link" href="#Plotting-the-performance">&#182;</a></h2><p>We use Matplotlib to create 2 plots--displaying the training and validation loss (resp. accuracy) for each (training) epoch side by side.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">history_dict</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span>
+<span class="n">history_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[24]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>dict_keys([&#39;loss&#39;, &#39;accuracy&#39;, &#39;val_loss&#39;, &#39;val_accuracy&#39;])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -13956,7 +14077,8 @@ ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
 
 
 <div class="output_png output_subarea ">
-<img src="output_35_0.png"
+<img src="data:image/png;base64,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4TBxInTuDGbhdeLE6v2qEZHd1XZ934IFC7jiiiuYM2cO7du356677qKoqIj33nuP1157jQULFux2zLp16xg4cCDvvfcexxxzDI8//njsud2dd955h3vvvXdHsHnwwQfZf//9ee+99xg1ahRz5sypNH/FxcXcdtttzJgxgzlz5vCPf/yDl19+mdmzZ7Ny5Uref/99PvjgAy655BIA7rnnHubOnct7773HQw89VM2/TvL26gABIRgsXQrbt4dXBQeRmlfb9X0HHXQQRx111I71Z555hoKCAgoKCvjwww9jA8Q+++zDKaecAsCRRx7J0qVLY899zjnn7JbmzTffZOjQoQD07t2bHj16VJq/t99+mxNPPJG2bdvSoEEDLrroImbOnMnBBx/MwoULueGGG5g2bRotW7YEoEePHowYMYJJkyal1NGtuvb6ACEi6VdRvV666vuaNm264/2iRYv49a9/zfTp05k3bx5DhgyJ7Q/QsGHDHe/z8vIoLS2NPXejRo12S5PqxGsVpW/Tpg3z5s1jwIABjB8/nquuugqAadOmcfXVV/POO+9QWFjItm3bUrpeVSlAiEjaZbK+b/369TRv3pwWLVqwfPlypk2bVuPXGDBgAM8++ywA77//fuwTSqL+/fszY8YMVq1aRWlpKZMnT2bgwIGUlJTg7px//vn84he/4N1332Xbtm0UFxdz4okncu+991JSUsKm8uV1aZIz80GISN1VVnRbk62YklVQUED37t3p2bMnXbt25dhjj63xa/zkJz/hkksuoVevXhQUFNCzZ88dxUNxOnTowJgxYxg0aBDuzumnn85pp53Gu+++yxVXXIG7Y2bcfffdlJaWctFFF7Fhwwa2b9/OzTffTPPmzWv8HuLkzJzUhYWFrgmDRGrPhx9+yOGHH57pbNQJpaWllJaW0rhxYxYtWsTJJ5/MokWLqF+/bv0Gj/vMzGy2uxfGpa9buRcRyUIbN27kpJNOorS0FHfnkUceqXPBoSqy/w5ERDKsVatWzJ49O9PZqHGqpBYRkVgKECIiEksBQkREYilAiIhILAUIEclKgwYN2q3T27hx4/i3f/u3So9r1qwZAMuWLeO8886r8Nx7ajY/bty4XTqsnXrqqaxduzaZrFfqzjvv5L777qv2eWqCAoSIZKVhw4YxefLkXbZNnjyZYcOGJXX8gQceyPPPP1/l65cPEK+88gqtWrWq8vnqIgUIEclK5513Hi+//DJbtmwBYOnSpSxbtowBAwbs6JdQUFDAEUccwUsvvbTb8UuXLqVnz54AbN68maFDh9KrVy8uvPBCNm/evCPdNddcs2Oo8DvuuAOA8ePHs2zZMk444QROOOEEAPLz81m5ciUA999/Pz179qRnz547hgpfunQphx9+OD/+8Y/p0aMHJ5988i7XiTN37lz69+9Pr169OPvss1mzZs2O63fv3p1evXrtGCTwb3/7244Jk/r27cuGDRuq/Lcto34QIlJtP/0p1PREaX36QPTdGqtNmzb069ePP//5z5x55plMnjyZCy+8EDOjcePGvPDCC7Ro0YKVK1fSv39/zjjjjArnZX744Ydp0qQJ8+bNY968eRQUFOzYN3bsWPbdd1+2bdvGSSedxLx587j++uu5//77mTFjBm3btt3lXLNnz+aJJ57g7bffxt05+uijGThwIK1bt2bRokU888wz/Pa3v+WCCy5gypQplc7vcMkll/Dggw8ycOBAbr/9dn7xi18wbtw47rrrLj799FMaNWq0o1jrvvvuY8KECRx77LFs3LiRxo0bp/DXjqcnCBHJWonFTInFS+7OrbfeSq9evRg8eDBffvklX3/9dYXnmTlz5o4v6l69etGrV68d+5599lkKCgro27cv8+fP3+NAfG+++SZnn302TZs2pVmzZpxzzjn8/e9/B6BLly706dMHqHxIcQjzU6xdu5aBAwcCcOmllzJz5swdeRw+fDhPPfXUjh7bxx57LDfddBPjx49n7dq1NdKTW08QIlJtlf3ST6ezzjqLm266iXfffZfNmzfv+OU/adIkSkpKmD17Ng0aNCA/Pz92iO9EcU8Xn376Kffddx+zZs2idevWXHbZZXs8T2Xj25UNFQ5huPA9FTFV5E9/+hMzZ85k6tSp/PKXv2T+/PmMGjWK0047jVdeeYX+/fvz17/+lcMOO6xK5y+jJwgRyVrNmjVj0KBB/OhHP9qlcnrdunXst99+NGjQgBkzZvBZ3OTzCY4//ngmRfOffvDBB8ybNw8IQ4U3bdqUli1b8vXXX/Pqq6/uOKZ58+ax5fzHH388L774Ips2beKbb77hhRde4Ljjjkv53lq2bEnr1q13PH38/ve/Z+DAgWzfvp0vvviCE044gXvuuYe1a9eyceNGPvnkE4444ghuvvlm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
+"
 >
 </div>
 
@@ -13968,7 +14090,7 @@ ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>   <span class="c1"># clear figure</span>
@@ -13980,7 +14102,7 @@ ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and validation accuracy&#39;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epochs&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -14002,714 +14124,13 @@ ERROR: TensorBoard could not bind to port 6006, it was already in use</pre>
 
 
 <div class="output_png output_subarea ">
-<img src="output_36_0.png"
+<img src="data:image/png;base64,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z3ZWpBJt2rShR48etGzZMu1tMhkgZgIHm1lvQsngQuCbyQnMrAvwaVQ6+BHweLS8FTCZ0ID9pwzmUUTqwYoVK2jfvj2FhYWYxVUeSDa5O2vXrmXFihX07t077e0yVsXk7uXAOOBFYAEwyd3nmdltZnZOlGwYsNDM3ge6AXdGy78BnABcYmazo8/ATOVVROrm888/p3PnzgoOjZSZ0blz5xqX8DJZgsDdnweeT1n2k6TpZ4BnYrabAEzIZN5EpH4pODRutfl99Ca1iIjEUoAQkQZXXAyFhdCsWfhbXFy3/a1du5aBAwcycOBA9t9/f9fhOkoAAA8bSURBVLp3775rftu2bWnt49JLL2XhwoVVpnnooYcormtmc0hGq5hERFIVF8PYsbBlS5hfujTMA4weXbt9du7cmdmzZwNw66230q5dO66//voKadwdd6dZs/j74t/97nfVHufqq6+uXQZzlEoQItKgbrppd3BI2LIlLK9vixcvpl+/fnz7299m0KBBrFq1irFjx1JUVMThhx/Obbfdtivt0KFDmT17NuXl5XTo0IEbbriBAQMGcOyxx/LJJ58AcPPNN3P//ffvSn/DDTcwZMgQvvzlL/PGG28AsHnzZs477zwGDBjAqFGjKCoq2hW8kt1yyy0cddRRu/LnHl4Te//99zn55JMZMGAAgwYNYsmSJQDcddddHHHEEQwYMICbMvFlxVCAEJEGtWxZzZbX1fz587nssst499136d69Oz/72c8oKSlhzpw5vPzyy8yfP3+PbTZs2MCJJ57InDlzOPbYY3n88cdj9+3uvP322/z85z/fFWx+9atfsf/++zNnzhxuuOEG3n333dhtv/vd7zJz5kzmzp3Lhg0bmDp1KgCjRo3iuuuuY86cObzxxhvst99+TJkyhRdeeIG3336bOXPm8P3vf7+evp2qKUCISIPq1atmy+uqT58+HHXUUbvmn376aQYNGsSgQYNYsGBBbIDYa6+9GD58OACDBw/edRefauTIkXukef3117nwwgsBGDBgAIcffnjsttOmTWPIkCEMGDCAV199lXnz5rFu3TrWrFnD2WefDYSX29q2bcsrr7zCmDFj2GuvvQDo1KlTzb+IWlCAEJEGdeed0LZtxWVt24blmbD33nvvml60aBG//OUv+fvf/05paSlnnHFG7LsBrVq12jXdvHlzysvL90gD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
+"
 >
 </div>
 
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Confusion-matrix">Confusion matrix<a class="anchor-link" href="#Confusion-matrix">&#182;</a></h2><p>Let us see what the confusion matrix looks like. Using both <code>sklearn.metrics</code> and <code>tensorflow</code>. Then we visualize the confusion matrix and see what that tells us.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get the predicted classes:</span>
-<span class="n">pred_classes</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_classes</span><span class="p">(</span><span class="n">train_images</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span>
-
-<span class="n">conf_mx</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">train_labels</span><span class="p">,</span><span class="n">pred_classes</span><span class="p">)</span>
-<span class="n">conf_mx</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[25]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>array([[   0,    0, 4307,  564,   20,  255,  245,    1,   45,    7],
-       [   0, 5237,   14,   50,   80,    7,   21,  521,   37,  212],
-       [   0,   12, 2719, 1014,  236,  232,  817,   22,  322,   96],
-       [   0,   58,  856, 2225,  777,  266,   35,   91,  989,  341],
-       [   0,   64,   98,  391, 1990,   35,   10,  244,  550, 1925],
-       [   0,    9,  868, 2289,  523,  314,   42,   23,  794,  125],
-       [   0,    0, 1957,  219,   32,   82, 3081,    5,   37,    4],
-       [   0, 2806,    2,   31,  194,    3,    0, 1730,   42,  907],
-       [   0,   29,  626, 1863, 1058,  227,    9,  100, 1011,  466],
-       [   0,  247,   24,  103,  984,    5,    1,  920,  163, 3007]])</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # Apparently the line I added: tf.compat.v1.disable_eager_execution()</span>
-<span class="c1"># # broke this. But I don&#39;t really need to do this since I can use sklearn.</span>
-<span class="n">conf_mx2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">train_labels</span><span class="p">,</span> <span class="n">pred_classes</span><span class="p">)</span>
-<span class="n">conf_mx2</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[26]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;tf.Tensor: shape=(10, 10), dtype=int32, numpy=
-array([[   0,    0, 4307,  564,   20,  255,  245,    1,   45,    7],
-       [   0, 5237,   14,   50,   80,    7,   21,  521,   37,  212],
-       [   0,   12, 2719, 1014,  236,  232,  817,   22,  322,   96],
-       [   0,   58,  856, 2225,  777,  266,   35,   91,  989,  341],
-       [   0,   64,   98,  391, 1990,   35,   10,  244,  550, 1925],
-       [   0,    9,  868, 2289,  523,  314,   42,   23,  794,  125],
-       [   0,    0, 1957,  219,   32,   82, 3081,    5,   37,    4],
-       [   0, 2806,    2,   31,  194,    3,    0, 1730,   42,  907],
-       [   0,   29,  626, 1863, 1058,  227,    9,  100, 1011,  466],
-       [   0,  247,   24,  103,  984,    5,    1,  920,  163, 3007]],
-      dtype=int32)&gt;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Visualizing-the-confusion-matrix">Visualizing the confusion matrix<a class="anchor-link" href="#Visualizing-the-confusion-matrix">&#182;</a></h2><p>We use code from chapter 3 of Hands on Machine Learning (A. Geron) (cf. <a href="https://github.com/ageron/handson-ml2/blob/master/03_classification.ipynb">https://github.com/ageron/handson-ml2/blob/master/03_classification.ipynb</a>) to display a "heat map" of the confusion matrix. Then we normalize the confusion matrix so we can compare error rates.</p>
-<p>See <a href="https://learning.oreilly.com/library/view/hands-on-machine-learning/9781492032632/ch03.html#classification_chapter">https://learning.oreilly.com/library/view/hands-on-machine-learning/9781492032632/ch03.html#classification_chapter</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">plot_confusion_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;If you prefer color and a colorbar&quot;&quot;&quot;</span>
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
-    <span class="n">cax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cax</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>Note that the rows represent actual classes while the columns represent predicted classes.
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">conf_mx</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">gray</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;confusion_matrix_plot_mnist&quot;</span><span class="p">,</span> <span class="n">tight_layout</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="output_44_0.png"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>The confusion matrix does not look good. Only diagonal cells should be "lit up". Let us normalize the confusion matrix to get the error rates.
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">row_sums</span> <span class="o">=</span> <span class="n">conf_mx</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">norm_conf_mx</span> <span class="o">=</span> <span class="n">conf_mx</span> <span class="o">/</span> <span class="n">row_sums</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">norm_conf_mx</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">norm_conf_mx</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">gray</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;confusion_matrix_errors_plot_mnist_val&quot;</span><span class="p">,</span> <span class="n">tight_layout</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="output_47_0.png"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>Looks like a lot of digits were still misclassified as 1's. Let's plot examples of 1's and 3's to try to determine what went wrong here.
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">plot_digits</span><span class="p">(</span><span class="n">instances</span><span class="p">,</span> <span class="n">images_per_row</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="mi">28</span>
-    <span class="n">images_per_row</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">instances</span><span class="p">),</span> <span class="n">images_per_row</span><span class="p">)</span>
-    <span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">]</span>
-    <span class="n">n_rows</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">instances</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">images_per_row</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">row_images</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">n_empty</span> <span class="o">=</span> <span class="n">n_rows</span> <span class="o">*</span> <span class="n">images_per_row</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">instances</span><span class="p">)</span>
-    <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span> <span class="o">*</span> <span class="n">n_empty</span><span class="p">)))</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">):</span>
-        <span class="n">rimages</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="n">row</span> <span class="o">*</span> <span class="n">images_per_row</span> <span class="p">:</span> <span class="p">(</span><span class="n">row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">images_per_row</span><span class="p">]</span>
-        <span class="n">row_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">rimages</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-    <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">row_images</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;binary&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cl_a</span><span class="p">,</span> <span class="n">cl_b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
-<span class="n">X_aa</span> <span class="o">=</span> <span class="n">train_images</span><span class="p">[(</span><span class="n">train_labels</span> <span class="o">==</span> <span class="n">cl_a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">pred_classes</span> <span class="o">==</span> <span class="n">cl_a</span><span class="p">)]</span>
-<span class="n">X_ab</span> <span class="o">=</span> <span class="n">train_images</span><span class="p">[(</span><span class="n">train_labels</span> <span class="o">==</span> <span class="n">cl_a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">pred_classes</span> <span class="o">==</span> <span class="n">cl_b</span><span class="p">)]</span>
-<span class="n">X_ba</span> <span class="o">=</span> <span class="n">train_images</span><span class="p">[(</span><span class="n">train_labels</span> <span class="o">==</span> <span class="n">cl_b</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">pred_classes</span> <span class="o">==</span> <span class="n">cl_a</span><span class="p">)]</span>
-<span class="n">X_bb</span> <span class="o">=</span> <span class="n">train_images</span><span class="p">[(</span><span class="n">train_labels</span> <span class="o">==</span> <span class="n">cl_b</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">pred_classes</span> <span class="o">==</span> <span class="n">cl_b</span><span class="p">)]</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">221</span><span class="p">);</span> <span class="n">plot_digits</span><span class="p">(</span><span class="n">X_aa</span><span class="p">[:</span><span class="mi">25</span><span class="p">],</span> <span class="n">images_per_row</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">222</span><span class="p">);</span> <span class="n">plot_digits</span><span class="p">(</span><span class="n">X_ab</span><span class="p">[:</span><span class="mi">25</span><span class="p">],</span> <span class="n">images_per_row</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">223</span><span class="p">);</span> <span class="n">plot_digits</span><span class="p">(</span><span class="n">X_ba</span><span class="p">[:</span><span class="mi">25</span><span class="p">],</span> <span class="n">images_per_row</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">224</span><span class="p">);</span> <span class="n">plot_digits</span><span class="p">(</span><span class="n">X_bb</span><span class="p">[:</span><span class="mi">25</span><span class="p">],</span> <span class="n">images_per_row</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;error_analysis_digits_plot_EXP1_valid&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="output_50_0.png"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>Those 3's classified as 1's (in the lower left hand corner) certainly do NOT look likes 1s! Also those 1's classified 3's (in the upper right hand corner) do not look anything like 3's.
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Getting-the-activation-values-of-the-hidden-nodes">Getting the activation values of the hidden nodes<a class="anchor-link" href="#Getting-the-activation-values-of-the-hidden-nodes">&#182;</a></h2><p>To get the activation values of the hidden nodes, we need to create a new model, <code>activation_model</code>, that takes the same input as our current model but outputs the activation value of the hidden layer, i.e. of the hidden node. Then use the <code>predict</code> function to get the activation values.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">models</span>
-
-<span class="c1"># Extracts the outputs of the 2 layers:</span>
-<span class="n">layer_outputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer</span><span class="o">.</span><span class="n">output</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">layers</span><span class="p">]</span>
-
-<span class="c1"># Creates a model that will return these outputs, given the model input:</span>
-<span class="n">activation_model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">layer_outputs</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_outputs</span><span class="p">)</span><span class="si">}</span><span class="s2"> layers&quot;</span><span class="p">)</span>
-<span class="n">layer_outputs</span> <span class="c1"># description of the layers</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>There are 2 layers
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[33]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&lt;tf.Tensor &#39;dense/Identity:0&#39; shape=(None, 1) dtype=float32&gt;,
- &lt;tf.Tensor &#39;dense_1/Identity:0&#39; shape=(None, 10) dtype=float32&gt;]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get the output of the hidden node for each of the 55000 training images</span>
-<span class="n">activations</span> <span class="o">=</span> <span class="n">activation_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">train_images</span><span class="p">)</span>
-<span class="n">hidden_layer_activation</span> <span class="o">=</span> <span class="n">activations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">hidden_layer_activation</span><span class="o">.</span><span class="n">shape</span>   <span class="c1">#  hidden node has one activation value per training image</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[34]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(55000, 1)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The maximum activation value of the hidden node is </span><span class="si">{</span><span class="n">hidden_layer_activation</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>The maximum activation value of the hidden node is 66.36717224121094
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Some stats about the output layer as an aside...</span>
-<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>  <span class="c1"># display probabilities as decimals and NOT in scientific notation</span>
-<span class="n">ouput_layer_activation</span> <span class="o">=</span> <span class="n">activations</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The output node has shape </span><span class="si">{</span><span class="n">ouput_layer_activation</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The output for the first image are </span><span class="si">{</span><span class="n">ouput_layer_activation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The sum of the probabilities is (approximately) </span><span class="si">{</span><span class="n">ouput_layer_activation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>The output node has shape (55000, 10)
-The output for the first image are [0.002  0.1612 0.0018 0.0309 0.164  0.0182 0.0002 0.2856 0.0396 0.2964]
-The sum of the probabilities is (approximately) 0.9999999403953552
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Creating-the-boxplot">Creating the boxplot<a class="anchor-link" href="#Creating-the-boxplot">&#182;</a></h2><p>We combine the activation values of the one hidden node  with the corresponding predicted classes into a DataFrame. We use both <code>matplotlib</code> and <code>seaborn</code> to create boxplots from the DataFrame.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">boxplot_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;act_value&#39;</span><span class="p">:</span><span class="n">hidden_layer_activation</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">55000</span><span class="p">),</span>
-                           <span class="s1">&#39;pred_class&#39;</span><span class="p">:</span><span class="n">pred_classes</span><span class="p">})</span>
-<span class="n">boxplot_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[37]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>act_value</th>
-      <th>pred_class</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1.302538</td>
-      <td>9</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>5.052796</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2.284433</td>
-      <td>9</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>9.497313</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0.000000</td>
-      <td>1</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[38]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># To see how closely the hidden nodes activation values correlate with the class predictions</span>
-<span class="c1"># Note that there were no 5s detected and that there were outliers for the activation values for the 6s</span>
-<span class="n">boxplot_df</span><span class="p">[[</span><span class="s1">&#39;act_value&#39;</span><span class="p">,</span><span class="s1">&#39;pred_class&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span><span class="s1">&#39;pred_class&#39;</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;act_value&#39;</span><span class="p">],</span> <span class="n">grid</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[38]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x649be2d90&gt;</pre>
-</div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="output_59_1.png"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">boxplot_df</span><span class="p">[</span><span class="s1">&#39;pred_class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span> <span class="c1"># Another way to verify what the boxplot is telling us</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[39]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>2    11471
-3     8749
-1     8462
-9     7090
-4     5894
-6     4261
-8     3990
-7     3657
-5     1426
-Name: pred_class, dtype: int64</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Let us use seaborn for the boxplots this time.</span>
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
-<span class="n">bplot</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;act_value&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;pred_class&#39;</span><span class="p">,</span> 
-                 <span class="n">data</span><span class="o">=</span><span class="n">boxplot_df</span><span class="p">,</span> 
-                 <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                 <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;colorblind&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="output_61_0.png"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
 </div>
 </div>
 
