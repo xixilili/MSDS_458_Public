@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>MSDS458_Assignment_03_20200722_v3</title>
+<title>MSDS458_Assignment_03_20200722_v4</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -14147,10 +14147,10 @@ There are a total of 1638886 words in the data corpus
 <div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">doc_sizes</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="nb">range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">800</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Reuters News Articles&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Words&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Words Per Document&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Number of Reuters News Articles&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14197,104 +14197,6 @@ There are a total of 1638886 words in the data corpus
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Distribution is right screwed, most of the words contained with the first couple hundred documents</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Review-distribution-of-the-unique-document-sizes">Review distribution of the unique document sizes<a class="anchor-link" href="#Review-distribution-of-the-unique-document-sizes">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">unique_doc_sizes</span> <span class="o">=</span> <span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">lst</span><span class="p">))</span> <span class="k">for</span> <span class="n">lst</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span> <span class="c1"># num of words in each document</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of unique words in Reuters News Articles: {min(unique_doc_sizes)} to {max(unique_doc_sizes)}&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Number of unique words in Reuters News Articles: 2 to 567
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">unique_doc_sizes</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Reuters News Articles&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Words&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[25]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Text(0, 0.5, &#39;Words&#39;)</pre>
-</div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
-"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Distribution is right screwed, most of the words contained with the first couple hundred documents of unique size</p>
 
 </div>
 </div>
@@ -14687,6 +14589,16 @@ _________________________________________________________________
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculate-the-Number-of-Parameters-Per-Layer">Calculate the Number of Parameters Per Layer<a class="anchor-link" href="#Calculate-the-Number-of-Parameters-Per-Layer">&#182;</a></h3><p>Embedding Parameters = num_words(10500) <em> size of output (128)<br> 
+RNN Parameters = [(size_of_input + 1) </em> size_of_output + size_of_output^2)]<br>
+Dense Layer = size of input(256+1) * size of output(46)</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -15156,6 +15068,16 @@ _________________________________________________________________
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculate-the-Number-of-Parameters-Per-Layer">Calculate the Number of Parameters Per Layer<a class="anchor-link" href="#Calculate-the-Number-of-Parameters-Per-Layer">&#182;</a></h3><p>Embedding Parameters = num_words(30980) <em> size of output (256)<br> 
+LSTM Parameters = 4 </em> [(size_of_input + 1) <em> size_of_output + size_of_output^2)]<br>
+Dense Layer = size of input(256+1) </em> size of output(46)</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
